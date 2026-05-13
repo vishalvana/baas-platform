@@ -1,4 +1,14 @@
 package com.vishal.baas_platform.repository;
 
-public class ProjectRepository {
+import com.vishal.baas_platform.entity.Project;
+import com.vishal.baas_platform.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface ProjectRepository
+        extends JpaRepository<Project, UUID> {
+
+    List<Project> findByOwner(User owner);
 }
