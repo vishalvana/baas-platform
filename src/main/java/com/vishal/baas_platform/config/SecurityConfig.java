@@ -1,5 +1,6 @@
 package com.vishal.baas_platform.config;
 
+import com.vishal.baas_platform.security.ApiKeyFilter;
 import com.vishal.baas_platform.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final ApiKeyFilter apiKeyFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -52,6 +54,10 @@ public class SecurityConfig {
 
                 .addFilterBefore(
                         jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(
+                        apiKeyFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
 
