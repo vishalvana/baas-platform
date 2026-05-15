@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -26,7 +27,10 @@ public class DataRecord {
     private String collectionName;
 
     @Column(columnDefinition = "jsonb")
-    private String data;
+    @org.hibernate.annotations.JdbcTypeCode(
+            org.hibernate.type.SqlTypes.JSON
+    )
+    private Map<String, Object> data;
 
     private LocalDateTime createdAt;
 }

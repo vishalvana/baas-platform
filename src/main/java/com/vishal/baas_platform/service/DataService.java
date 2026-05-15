@@ -17,7 +17,7 @@ public class DataService {
 
     private final DataRecordRepository dataRecordRepository;
 
-    private final ObjectMapper objectMapper;
+   // private final ObjectMapper objectMapper;
 
     public DataRecord createRecord(
             UUID projectId,
@@ -25,23 +25,14 @@ public class DataService {
             Map<String, Object> requestBody
     ) {
 
-        try {
+        DataRecord record = DataRecord.builder()
+                .projectId(projectId)
+                .collectionName(collectionName)
+                .data(requestBody)
+                .createdAt(LocalDateTime.now())
+                .build();
 
-            String jsonData =
-                    objectMapper.writeValueAsString(requestBody);
-
-            DataRecord record = DataRecord.builder()
-                    .projectId(projectId)
-                    .collectionName(collectionName)
-                    .data(jsonData)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            return dataRecordRepository.save(record);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save data");
-        }
+        return dataRecordRepository.save(record);
     }
 
     public List<DataRecord> getRecords(
