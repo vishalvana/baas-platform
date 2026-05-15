@@ -1,6 +1,7 @@
 package com.vishal.baas_platform.service;
 
 import com.vishal.baas_platform.dto.project.ProjectRequest;
+import com.vishal.baas_platform.dto.project.ProjectResponse;
 import com.vishal.baas_platform.entity.Project;
 import com.vishal.baas_platform.entity.User;
 import com.vishal.baas_platform.repository.ProjectRepository;
@@ -20,7 +21,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
 
-    public Project createProject(ProjectRequest request) {
+    public ProjectResponse createProject(ProjectRequest request) {
 
         String email = SecurityContextHolder
                 .getContext()
@@ -38,10 +39,17 @@ public class ProjectService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        return projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
+
+        return ProjectResponse.builder()
+                .id(savedProject.getId())
+                .name(savedProject.getName())
+                .apiKey(savedProject.getApiKey())
+                .createdAt(savedProject.getCreatedAt())
+                .build();
     }
 
-    public List<Project> getMyProjects() {
+    public List<ProjectResponse> getMyProjects(){
 
         String email = SecurityContextHolder
                 .getContext()
@@ -52,6 +60,14 @@ public class ProjectService {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
-        return projectRepository.findByOwner(user);
+        return projectRepository.findByOwner(user)
+                .stream()
+                .map(project -> ProjectResponse.builder()
+                        .id(project.getId())
+                        .name(project.getName())
+                        .apiKey(project.getApiKey())
+                        .createdAt(project.getCreatedAt())
+                        .build())
+                .toList();
     }
 }
