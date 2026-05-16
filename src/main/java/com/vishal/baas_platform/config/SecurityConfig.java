@@ -48,8 +48,11 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/sdk/auth/**",
+                                "/api/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
 
