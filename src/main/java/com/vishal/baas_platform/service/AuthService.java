@@ -4,6 +4,7 @@ import com.vishal.baas_platform.dto.auth.AuthResponse;
 import com.vishal.baas_platform.dto.auth.LoginRequest;
 import com.vishal.baas_platform.dto.auth.SignupRequest;
 import com.vishal.baas_platform.entity.User;
+import com.vishal.baas_platform.exception.CustomException;
 import com.vishal.baas_platform.repository.UserRepository;
 import com.vishal.baas_platform.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class AuthService {
     public String signup(SignupRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new CustomException("Email already exists");
         }
 
         User user = User.builder()
@@ -41,7 +42,7 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new CustomException("Invalid credentials"));
 
         boolean matches = passwordEncoder.matches(
                 request.getPassword(),
@@ -49,7 +50,7 @@ public class AuthService {
         );
 
         if (!matches) {
-            throw new RuntimeException("Invalid credentials");
+            throw new CustomException("Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(

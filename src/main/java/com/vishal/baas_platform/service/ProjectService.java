@@ -4,6 +4,7 @@ import com.vishal.baas_platform.dto.project.ProjectRequest;
 import com.vishal.baas_platform.dto.project.ProjectResponse;
 import com.vishal.baas_platform.entity.Project;
 import com.vishal.baas_platform.entity.User;
+import com.vishal.baas_platform.exception.CustomException;
 import com.vishal.baas_platform.repository.ProjectRepository;
 import com.vishal.baas_platform.repository.UserRepository;
 import com.vishal.baas_platform.util.ApiKeyGenerator;
@@ -30,7 +31,7 @@ public class ProjectService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new CustomException("User not found"));
 
         Project project = Project.builder()
                 .name(request.getName())
@@ -58,7 +59,7 @@ public class ProjectService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new CustomException("User not found"));
 
         return projectRepository.findByOwner(user)
                 .stream()
