@@ -2,6 +2,7 @@ package com.vishal.baas_platform.controller;
 
 import com.vishal.baas_platform.entity.DataRecord;
 import com.vishal.baas_platform.service.DataService;
+import com.vishal.baas_platform.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +18,38 @@ public class DataController {
     private final DataService dataService;
 
     @PostMapping("/{projectId}/{collection}")
-    public DataRecord createRecord(
+    public ApiResponse<DataRecord> createRecord(
             @PathVariable UUID projectId,
             @PathVariable String collection,
             @RequestBody Map<String, Object> requestBody
     ) {
 
-        return dataService.createRecord(
+        DataRecord record = dataService.createRecord(
                 projectId,
                 collection,
                 requestBody
         );
+
+        return ApiResponse.<DataRecord>builder()
+                .success(true)
+                .message("Record created successfully")
+                .data(record)
+                .build();
     }
 
     @GetMapping("/{projectId}/{collection}")
-    public List<DataRecord> getRecords(
+    public ApiResponse<List<DataRecord>> getRecords(
             @PathVariable UUID projectId,
             @PathVariable String collection
     ) {
 
-        return dataService.getRecords(
-                projectId,
-                collection
-        );
+        List<DataRecord> records =
+                dataService.getRecords(projectId, collection);
+
+        return ApiResponse.<List<DataRecord>>builder()
+                .success(true)
+                .message("Records fetched successfully")
+                .data(records)
+                .build();
     }
 }
