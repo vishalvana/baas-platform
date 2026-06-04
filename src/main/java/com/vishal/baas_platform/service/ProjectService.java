@@ -1,5 +1,6 @@
 package com.vishal.baas_platform.service;
 
+import com.vishal.baas_platform.dto.project.ProjectDetailsResponse;
 import com.vishal.baas_platform.dto.project.ProjectRequest;
 import com.vishal.baas_platform.dto.project.ProjectResponse;
 import com.vishal.baas_platform.entity.Project;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,40 @@ public class ProjectService {
                 .name(savedProject.getName())
                 .apiKey(savedProject.getApiKey())
                 .createdAt(savedProject.getCreatedAt())
+                .build();
+    }
+    public ProjectDetailsResponse getProject(
+            UUID projectId
+    ) {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new CustomException("User not found"));
+
+        Project project = projectRepository
+                .findById(projectId)
+                .orElseThrow(() ->
+                        new CustomException("Project not found"));
+
+        if (!project.getOwner().getId()
+                .equals(user.getId())) {
+
+            throw new CustomException(
+                    "Access denied"
+            );
+        }
+
+        return ProjectDetailsResponse.builder()
+                .id(project.getId())
+                .name(project.getName())
+                .apiKey(project.getApiKey())
+                .createdAt(project.getCreatedAt())
                 .build();
     }
 
