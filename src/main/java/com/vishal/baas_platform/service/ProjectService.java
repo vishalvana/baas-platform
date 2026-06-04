@@ -3,9 +3,12 @@ package com.vishal.baas_platform.service;
 import com.vishal.baas_platform.dto.project.ProjectDetailsResponse;
 import com.vishal.baas_platform.dto.project.ProjectRequest;
 import com.vishal.baas_platform.dto.project.ProjectResponse;
+import com.vishal.baas_platform.dto.project.ProjectStatsResponse;
 import com.vishal.baas_platform.entity.Project;
 import com.vishal.baas_platform.entity.User;
 import com.vishal.baas_platform.exception.CustomException;
+import com.vishal.baas_platform.repository.AppUserRepository;
+import com.vishal.baas_platform.repository.DataRecordRepository;
 import com.vishal.baas_platform.repository.ProjectRepository;
 import com.vishal.baas_platform.repository.UserRepository;
 import com.vishal.baas_platform.util.ApiKeyGenerator;
@@ -20,6 +23,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
+    private final DataRecordRepository dataRecordRepository;
+    private final AppUserRepository appUserRepository;
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
@@ -106,5 +111,27 @@ public class ProjectService {
                         .createdAt(project.getCreatedAt())
                         .build())
                 .toList();
+    }
+    public ProjectStatsResponse getProjectStats(
+            UUID projectId
+    ) {
+
+        long totalDocuments =
+                dataRecordRepository
+                        .countByProjectId(projectId);
+
+        long totalCollections =
+                dataRecordRepository
+                        .countDistinctCollections(projectId);
+
+        long totalAppUsers =
+                appUserRepository
+                        .countByProjectId(projectId);
+
+        return ProjectStatsResponse.builder()
+                .totalCollections(totalCollections)
+                .totalDocuments(totalDocuments)
+                .totalAppUsers(totalAppUsers)
+                .build();
     }
 }

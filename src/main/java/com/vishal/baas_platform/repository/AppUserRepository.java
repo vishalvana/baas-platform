@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface AppUserRepository
         extends JpaRepository<AppUser, UUID> {
     long countByProjectIdIn(List<UUID> projectIds);
+    long countByProjectId(UUID projectId);
 
     Optional<AppUser> findByProjectIdAndEmail(
             UUID projectId,

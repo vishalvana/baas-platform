@@ -18,6 +18,13 @@ FROM DataRecord d
 WHERE d.projectId IN :projectIds
 """)
     long countDistinctCollections(List<UUID> projectIds);
+    long countByProjectId(UUID projectId);
+    @Query("""
+SELECT COUNT(DISTINCT d.collectionName)
+FROM DataRecord d
+WHERE d.projectId = :projectId
+""")
+    long countDistinctCollections(UUID projectId);
 
     List<DataRecord> findByProjectIdAndCollectionName(
             UUID projectId,
