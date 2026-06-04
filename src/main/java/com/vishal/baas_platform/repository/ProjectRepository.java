@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ProjectRepository
         extends JpaRepository<Project, UUID> {
-
+    long countByOwner(User owner);
     List<Project> findByOwner(User owner);
     Optional<Project> findByApiKey(String apiKey);
 }
