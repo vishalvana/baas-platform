@@ -1,5 +1,6 @@
 package com.vishal.baas_platform.config;
 
+import com.vishal.baas_platform.filter.ApiUsageTrackingFilter;
 import com.vishal.baas_platform.security.ApiKeyFilter;
 import com.vishal.baas_platform.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final ApiKeyFilter apiKeyFilter;
+    private final ApiUsageTrackingFilter apiUsageTrackingFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -61,6 +63,10 @@ public class SecurityConfig {
 
                 .addFilterBefore(
                         jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        apiUsageTrackingFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
