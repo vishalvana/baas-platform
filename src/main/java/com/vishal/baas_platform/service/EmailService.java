@@ -12,9 +12,10 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendEmail(
-            SendEmailRequest request
-    ) {
+    /**
+     * Generic method using DTO
+     */
+    public void sendEmail(SendEmailRequest request) {
 
         SimpleMailMessage message =
                 new SimpleMailMessage();
@@ -28,6 +29,27 @@ public class EmailService {
         message.setText(
                 request.getBody()
         );
+
+        mailSender.send(message);
+    }
+
+    /**
+     * Overloaded method for OTP and internal usage
+     */
+    public void sendEmail(
+            String to,
+            String subject,
+            String body
+    ) {
+
+        SimpleMailMessage message =
+                new SimpleMailMessage();
+
+        message.setTo(to);
+
+        message.setSubject(subject);
+
+        message.setText(body);
 
         mailSender.send(message);
     }
