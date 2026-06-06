@@ -41,6 +41,7 @@ public class SecurityConfig {
             throws Exception {
 
         http
+
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
@@ -58,6 +59,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers("/email/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -75,6 +77,7 @@ public class SecurityConfig {
                 )
 
                 .httpBasic(Customizer.withDefaults());
+
 
         return http.build();
     }
